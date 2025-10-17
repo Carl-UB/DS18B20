@@ -22,7 +22,7 @@ DS18B20::DS18B20(uint8_t pin) :
     }
 }
 
-uint8_t DS18B20::select(uint8_t address[]) {
+uint8_t DS18B20::select(const uint8_t address[]) {
     if (isConnected(address)) {
         memcpy(selectedAddress, address, 8);
 
@@ -93,7 +93,7 @@ float DS18B20::getTempF() {
     return getTempC() * 1.8 + 32;
 }
 
-uint8_t DS18B20::getResolution() {
+uint8_t DS18B20::getResolution() const {
     switch (selectedScratchpad[CONFIGURATION]) {
         case RES_9_BIT:
             return 9;
@@ -132,15 +132,15 @@ void DS18B20::setResolution(uint8_t resolution) {
     writeScratchpad();
 }
 
-uint8_t DS18B20::getPowerMode() {
+uint8_t DS18B20::getPowerMode() const {
     return selectedPowerMode;
 }
 
-uint8_t DS18B20::getFamilyCode() {
+uint8_t DS18B20::getFamilyCode() const {
     return selectedAddress[0];
 }
 
-void DS18B20::getAddress(uint8_t address[]) {
+void DS18B20::getAddress(uint8_t address[]) const {
     memcpy(address, selectedAddress, 8);
 }
 
@@ -149,7 +149,7 @@ void DS18B20::doConversion() {
     delayForConversion(globalResolution, globalPowerMode);
 }
 
-uint8_t DS18B20::getNumberOfDevices() {
+uint8_t DS18B20::getNumberOfDevices() const {
     return numberOfDevices;
 }
 
@@ -167,7 +167,7 @@ void DS18B20::setAlarms(int8_t alarmLow, int8_t alarmHigh) {
     writeScratchpad();
 }
 
-int8_t DS18B20::getAlarmLow() {
+int8_t DS18B20::getAlarmLow() const {
     return selectedScratchpad[ALARM_LOW];
 }
 
@@ -177,7 +177,7 @@ void DS18B20::setAlarmLow(int8_t alarmLow) {
     writeScratchpad();
 }
 
-int8_t DS18B20::getAlarmHigh() {
+int8_t DS18B20::getAlarmHigh() const {
     return selectedScratchpad[ALARM_HIGH];
 }
 
@@ -191,7 +191,7 @@ void DS18B20::setRegisters(int8_t lowRegister, int8_t highRegister) {
     setAlarms(lowRegister, highRegister);
 }
 
-int8_t DS18B20::getLowRegister() {
+int8_t DS18B20::getLowRegister() const {
     return getAlarmLow();
 }
 
@@ -199,7 +199,7 @@ void DS18B20::setLowRegister(int8_t lowRegister) {
     setAlarmLow(lowRegister);
 }
 
-int8_t DS18B20::getHighRegister() {
+int8_t DS18B20::getHighRegister() const {
     return getAlarmHigh();
 }
 
@@ -323,7 +323,7 @@ uint8_t DS18B20::oneWireSearch(uint8_t romCommand) {
     return 1;
 }
 
-uint8_t DS18B20::isConnected(uint8_t address[]) {
+uint8_t DS18B20::isConnected(const uint8_t address[]) {
     if (!sendCommand(SEARCH_ROM)) {
         return 0;
     }

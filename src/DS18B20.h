@@ -38,29 +38,29 @@
 class DS18B20 {
     public:
         DS18B20(uint8_t pin);
-        uint8_t select(uint8_t address[]);
+        uint8_t select(const uint8_t address[]);
         uint8_t selectNext();
         uint8_t selectNextAlarm();
         void resetSearch();
         float getTempC();
         float getTempF();
-        uint8_t getResolution();
+        uint8_t getResolution() const;
         void setResolution(uint8_t resolution);
-        uint8_t getPowerMode();
-        uint8_t getFamilyCode();
-        void getAddress(uint8_t address[]);
+        uint8_t getPowerMode() const;
+        uint8_t getFamilyCode() const;
+        void getAddress(uint8_t address[]) const;
         void doConversion();
-        uint8_t getNumberOfDevices();
+        uint8_t getNumberOfDevices() const;
         uint8_t hasAlarm();
         void setAlarms(int8_t alarmLow, int8_t alarmHigh);
-        int8_t getAlarmLow();
+        int8_t getAlarmLow() const;
         void setAlarmLow(int8_t alarmLow);
-        int8_t getAlarmHigh();
+        int8_t getAlarmHigh() const;
         void setAlarmHigh(int8_t alarmHigh);
         void setRegisters(int8_t lowRegister, int8_t highRegister);
-        int8_t getLowRegister();
+        int8_t getLowRegister() const;
         void setLowRegister(int8_t lowRegister);
-        int8_t getHighRegister();
+        int8_t getHighRegister() const;
         void setHighRegister(int8_t highRegister);
     private:
         OneWire oneWire;
@@ -79,7 +79,7 @@ class DS18B20 {
         uint8_t sendCommand(uint8_t romCommand);
         uint8_t sendCommand(uint8_t romCommand, uint8_t functionCommand, uint8_t power = 0);
         uint8_t oneWireSearch(uint8_t romCommand);
-        uint8_t isConnected(uint8_t address[]);
+        uint8_t isConnected(const uint8_t address[]);
         void delayForConversion(uint8_t resolution, uint8_t powerMode);
 };
 
