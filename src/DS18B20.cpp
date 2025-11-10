@@ -4,8 +4,8 @@
 
 DS18B20::DS18B20(uint8_t pin) :
     oneWire(OneWire(pin)),
-    numberOfDevices(0),
     globalResolution(0),
+    numberOfDevices(0),
     selectedResolution(0),
     selectedPowerMode(0)
 {
@@ -171,12 +171,16 @@ uint8_t DS18B20::getNumberOfDevices() const {
     return numberOfDevices;
 }
 
-uint8_t DS18B20::hasAlarm() {
+std::optional<bool> DS18B20::hasAlarm() {
     uint8_t oldResolution = selectedResolution;
     setResolution(9);
-    float temp = getTempC();
+    std::optional<float> maybe_temp_reading_degC = getTempC();
     setResolution(oldResolution);
-    return ((temp <= selectedScratchpad[ALARM_LOW]) || (temp >= selectedScratchpad[ALARM_HIGH]));
+    if (!maybe_temp_reading_degC.has_value()) {
+        return std::nullopt;
+    }
+    return ((maybe_temp_reading_degC <= selectedScratchpad[ALARM_LOW]) ||
+            (maybe_temp_reading_degC >= selectedScratchpad[ALARM_HIGH]));
 }
 
 void DS18B20::setAlarms(int8_t alarmLow, int8_t alarmHigh) {

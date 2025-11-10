@@ -52,7 +52,7 @@ class DS18B20 {
         void getAddress(uint8_t address[]) const;
         void doConversion();
         uint8_t getNumberOfDevices() const;
-        uint8_t hasAlarm();
+        std::optional<bool> hasAlarm();
         void setAlarms(int8_t alarmLow, int8_t alarmHigh);
         int8_t getAlarmLow() const;
         void setAlarmLow(int8_t alarmLow);
