@@ -1,5 +1,7 @@
 #include <DS18B20.h>
 
+#include <optional>
+
 DS18B20::DS18B20(uint8_t pin) :
     oneWire(OneWire(pin)),
     numberOfDevices(0),
@@ -60,10 +62,19 @@ void DS18B20::resetSearch() {
     lastDevice = 0;
 }
 
-float DS18B20::getTempC() {
-    sendCommand(MATCH_ROM, CONVERT_T, !selectedPowerMode);
+std::optional<float> DS18B20::getTempC() {
+    if (sendCommand(MATCH_ROM, CONVERT_T, !selectedPowerMode) == 0) {
+        // Failure
+        return std::nullopt;
+    }
+
     delayForConversion(selectedResolution, selectedPowerMode);
-    readScratchpad();
+
+    if (readScratchpad() == 0) {
+        // Failure
+        return std::nullopt;
+    }
+
     uint8_t lsb = selectedScratchpad[TEMP_LSB];
     uint8_t msb = selectedScratchpad[TEMP_MSB];
 
@@ -89,8 +100,15 @@ float DS18B20::getTempC() {
     return temp / 16.0;
 }
 
-float DS18B20::getTempF() {
-    return getTempC() * 1.8 + 32;
+std::optional<float> DS18B20::getTempF() {
+    std::optional<float> maybe_temp_C = getTempC();
+
+    if (!maybe_temp_C.has_value()) {
+        return std::nullopt;
+    }
+
+    // Otherwise read was OK, can use value
+    return *maybe_temp_C * 1.8 + 32;
 }
 
 uint8_t DS18B20::getResolution() const {

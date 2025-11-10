@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include <OneWire.h>
+#include <optional>
 
 #define SEARCH_ROM 0xF0
 #define READ_ROM 0x33
@@ -42,8 +43,8 @@ class DS18B20 {
         uint8_t selectNext();
         uint8_t selectNextAlarm();
         void resetSearch();
-        float getTempC();
-        float getTempF();
+        std::optional<float> getTempC();
+        std::optional<float> getTempF();
         uint8_t getResolution() const;
         void setResolution(uint8_t resolution);
         uint8_t getPowerMode() const;
